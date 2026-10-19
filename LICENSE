@@ -49,6 +49,10 @@ sibling file or inline, so the app runs fully offline.
     and colors of the naked-eye stars) and is therefore itself licensed under
     CC BY-SA 4.0. It is NOT covered by the proprietary terms above.
 
+  • Mission events for the rebuilt probes (`probes-rebuilt.js`): NASA Space
+    Science Data Coordinated Archive (NSSDCA) and NASA mission pages, cited
+    in `probe-events.md`.
+
   • Spacecraft launch dates: CelesTrak satellite catalog (SATCAT),
     https://celestrak.org.
 

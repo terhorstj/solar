@@ -6,11 +6,11 @@ Positions come from NASA JPL's Horizons system, not from guesses or idealized or
 
 It's one self-contained `index.html` plus sibling data files. No build step for the page, no framework, no server.
 
-**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 8 visited asteroids and comets, and 34 spacecraft, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. Still to come: six early probes Horizons doesn't have, and the Earth-orbiters. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
+**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 9 visited asteroids and comets, and 40 spacecraft, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. Still to come: the Earth-orbiters. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
 
 ## Run it
 
-Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. Keep `bodies.js`, `moons.js`, `probes.js`, and `sky.js` next to it. It opens on today's date.
+Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. Keep `bodies.js`, `moons.js`, `probes.js`, `probes-rebuilt.js`, and `sky.js` next to it. It opens on today's date.
 
 ## Controls
 
@@ -38,6 +38,7 @@ Leave it untouched for a couple of minutes and the view begins, very slowly, to 
 - **Orbit lines** show each planet's, dwarf planet's, small body's, and moon's current orbit, drawn through its exact position. A moon's orbit appears once it's big enough on screen to read.
 - **Spacecraft trails.** The craft you've selected or are following shows its full path so far. Every other craft shows a faint tail covering its last year.
 - **Predictions.** Horizons continues many spacecraft past today (for example Voyager 1 to 2035). Positions after the date the data was built (2026-10-18) are predictions: the card says "Predicted position," the time bar says so, and that part of a trail is dashed.
+- **Rebuilt probes.** Six early probes aren't in Horizons: Luna 1, Mariner 4, Mariner 10, Viking 1 and 2, and Giotto. Their paths are rebuilt from their dated mission events (see `probe-events.md`): coasting orbit legs that arrive at each target body's real position on the documented date, joined by curved passes at the documented closest distances. They're exact at each encounter and approximate in between, and their cards say "Reconstructed." The Vikings orbit Mars on ellipses of the published sizes, but the orbits' orientation isn't published, so it's approximate.
 - **Where tracking ends.** A craft disappears at the end of its data. When the end is an event, the card says so: entering Jupiter (Galileo) or Saturn (Cassini), crashing into Mercury (MESSENGER), landing (Curiosity, Perseverance, NEAR on Eros, Rosetta on its comet), or DART's impact.
 
 ## Data and accuracy
@@ -53,13 +54,13 @@ Leave it untouched for a couple of minutes and the view begins, very slowly, to 
 - Moons: 1% of their distance from their planet. Approximate is fine for moons, and 0.1% would have taken about ten times the data.
 - Spacecraft: 0.1% of their distance from the body they're near, or 1% near a dwarf planet or small body (Dawn at Vesta and Ceres, Rosetta, NEAR, Hayabusa2, OSIRIS-REx, DART, Hera). Never tighter than 0.5 km.
 
-**Measured accuracy.** `tools/validate.py` compares the stored data with fresh Horizons positions at random times never used in the build: 200 per object, plus 60 inside each window near a body and 10 around each of up to 25 close passes per craft. Every object passes except one sample of Hera (see Known limits). Results are in [`tools/accuracy-report.txt`](tools/accuracy-report.txt). The page's own math is checked against the Python by `tools/check_js.mjs`: across 342,000 samples they agree to within a few millimeters.
+**Measured accuracy.** `tools/validate.py` compares the stored data with fresh Horizons positions at random times never used in the build: 200 per object, plus 60 inside each window near a body and 10 around each of up to 25 close passes per craft. Every object passes except, in the latest run, one sample of Apollo 8 behind the Moon (1.28 times tolerance). Which marginal sample shows up depends on the random draw; an earlier run caught one of Hera's instead. Both cases are explained under Known limits. Results are in [`tools/accuracy-report.txt`](tools/accuracy-report.txt). The page's own math is checked against the Python by `tools/check_js.mjs`: across 342,000 samples they agree to within a few millimeters.
 
 **Known limits.**
 
 - **Older planet positions in mission tracks.** Some spacecraft trajectories in Horizons were reconstructed against older planet positions than the ones Horizons now uses for the planets themselves. At the Voyager flybys the two disagree by up to about 13,600 km (at Neptune). This app keeps each probe's position relative to the body it's passing, which is what you see up close.
 - **Hayabusa2 at Ryugu.** Horizons can't center on Ryugu, so Hayabusa2 is placed there by subtracting the two heliocentric positions. Horizons' Ryugu and Hayabusa2 solutions disagree by about 15 to 20 km, which its card notes.
-- **Moon flybys.** Probes are never stored relative to moons. Cassini's Titan flybys and the Apollo passes behind the Moon are only as accurate as the tolerance relative to the planet.
+- **Moon flybys.** Probes are never stored relative to moons, so Cassini's Titan flybys and the Apollo passes behind the Moon are only as accurate as the tolerance relative to the planet (about 400 km for Apollo at the Moon). Tracking craft relative to the Moon was tried and reverted: the Moon itself is stored only to about 3,800 km (1%), and that error leaked into every craft tracked against it.
 - **Jumps in Horizons' own tracks.** A few spacecraft tracks in Horizons jump in position between two samples, which no smooth path can follow. The largest is Psyche on 2027-02-01, a jump of about 1.6 million km in Horizons' predicted track. The build lists them in `tools/build-report.txt`, and the validator skips samples inside them.
 - **Engine burns between samples.** Near a planet or small body the build samples hourly or finer, so a burn between samples is smoothed over. The one case the validator catches is Hera's predicted braking burn at Didymos on 2026-10-28: for the hour before it, Hera is drawn up to about 2 km off at 120 km from Didymos.
 - **Times** are in TDB, the time scale Horizons uses, which runs about a minute ahead of UTC. The date readout shows TDB as-is.
@@ -72,6 +73,7 @@ The scripts use only Python's standard library. Downloads and fits are cached in
 
 ```
 python3 tools/build.py       # fetch, choose snapshots, write bodies.js, moons.js, probes.js
+python3 tools/reconstruct.py # rebuild the six probes Horizons lacks, write probes-rebuilt.js (run after build.py)
 python3 tools/make_sky.py    # write sky.js from Star Explorer's stars.js (expects ../uncharted/starmap-real/stars.js)
 python3 tools/validate.py    # check against held-out Horizons samples (exit code 1 on failure)
 node tools/check_js.mjs      # check the page's math against the Python
@@ -84,6 +86,7 @@ index.html        the entire app (single self-contained file, three.js r136 inli
 bodies.js         Sun, planets, dwarf planets, asteroids and comets (generated)
 moons.js          moons, relative to their planets (generated)
 probes.js         spacecraft (generated)
+probes-rebuilt.js probes Horizons doesn't have, rebuilt from mission dates (generated)
 sky.js            naked-eye stars for the backdrop (generated; CC BY-SA 4.0, from HYG v3)
 tools/
   catalog.py      every object: Horizons IDs, names, colors, special cases
@@ -93,8 +96,10 @@ tools/
   validate.py     accuracy check against held-out samples
   check_js.mjs    page-vs-Python math check
   make_sky.py     builds sky.js
+  reconstruct.py  rebuilds the six missing probes; reconstruct-report.txt has its physics checks
   build-report.txt, build-meta.json, accuracy-report.txt
 objects.md        the full object list with Horizons IDs and coverage
+probe-events.md   dated mission events and sources for the rebuilt probes
 PLAN.md           the plan
 LICENSE           proprietary code + third-party data credits
 ```
@@ -104,6 +109,7 @@ LICENSE           proprietary code + third-party data credits
 - **JPL Horizons**, Solar System Dynamics Group, NASA/JPL-Caltech: positions, masses, and radii.
 - **JPL Small-Body Database**: small-body radii and masses.
 - **CelesTrak** satellite catalog: launch dates.
+- **NASA NSSDCA** and NASA mission pages: the mission events behind the rebuilt probes (cited in `probe-events.md`).
 - **HYG Database v3**, David Nash / astronexus, CC BY-SA 4.0: the backdrop stars (`sky.js` is a derivative and is likewise CC BY-SA 4.0).
 - **NASA Saturnian Rings Fact Sheet**: ring radii.
 - **IAU WGCCRE 2015 report**: Saturn's pole orientation.

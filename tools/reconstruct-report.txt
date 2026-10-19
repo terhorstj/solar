@@ -1,0 +1,25 @@
+Reconstruction report, 2026-10-19. Values and sources: probe-events.md.
+
+Luna 1: 7 states
+  last pass 301      v_inf 2.78 km/s
+  check: heliocentric period once clear of Earth about 460 days (expected about 450)
+Mariner 4: 9 states
+  leave 399      v_inf 3.13 km/s
+  last pass 499      v_inf 4.40 km/s
+Mariner 10: 24 states
+  leave 399      v_inf 4.29 km/s
+  pass 299      v_inf in 8.186, out 8.179 km/s; legs need a 33.9 deg turn, the pass gives 33.8 deg
+  pass 199      v_inf in 10.495, out 9.679 km/s; legs need a 22.3 deg turn, the pass gives 7.4 deg
+  pass 199      v_inf in 9.677, out 9.679 km/s; legs need a 0.8 deg turn, the pass gives 0.5 deg
+  last pass 199      v_inf 9.68 km/s
+Viking 1: 14 states
+  leave 399      v_inf 4.62 km/s
+  capture at 499      v_inf 2.75 km/s
+Viking 2: 14 states
+  leave 399      v_inf 3.90 km/s
+  capture at 499      v_inf 2.65 km/s
+Giotto: 19 states
+  leave 399      v_inf 3.46 km/s
+  pass 1P       v_inf in 68.360, out 68.478 km/s; legs need a 0.0 deg turn, the pass gives 0.0 deg
+  pass 399      v_inf in 3.518, out 3.465 km/s; legs need a 64.8 deg turn, the pass gives 63.9 deg
+  last pass 26P      v_inf 14.02 km/s

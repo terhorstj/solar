@@ -54,7 +54,7 @@ def load_all():
     eph = orbit.Ephem()
     eph.set_sun_gm(sun_gm(os.path.join(ROOT, "bodies.js")))
     groups = {}
-    for fn, var in (("bodies.js", "bodies"), ("moons.js", "moons"), ("probes.js", "probes")):
+    for fn, var in (("bodies.js", "bodies"), ("moons.js", "moons"), ("probes.js", "probes"), ("probes-rebuilt.js", "rebuilt")):
         p = os.path.join(ROOT, fn)
         groups[var] = load_js_array(p, var) if os.path.exists(p) else []
         to_ephem(groups[var], eph)

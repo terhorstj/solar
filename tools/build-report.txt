@@ -1,4 +1,4 @@
-Build report, 2026-10-18. Range 1957-10-04 to 2036-01-01.
+Build report, 2026-10-19. Range 1957-10-04 to 2036-01-01.
 
 Mercury                     28579 reference ->   956 states (tol 1e-06 x distance from Sun)
 Venus                       28579 reference ->   891 states (tol 1e-06 x distance from Sun)
@@ -21,6 +21,7 @@ Bennu                       28579 reference ->   287 states (tol 1e-05 x distanc
 Arrokoth                    28579 reference ->    70 states (tol 1e-05 x distance from Sun)
 Didymos                     28579 reference ->   271 states (tol 1e-05 x distance from Sun)
 Halley's Comet              28579 reference ->    97 states (tol 1e-05 x distance from Sun)
+Comet Grigg-Skjellerup      28579 reference ->   312 states (tol 1e-05 x distance from Sun)
 
 Moon                         8370 reference ->  2476 states (tol 1e-02 x distance from planet)
 Phobos                     721977 reference -> 10379 states (tol 1e-02 x distance from planet)
@@ -79,6 +80,6 @@ Spitzer                     12290 reference ->    21 states; near: Sun:13, Earth
 Apollo 8                      226 reference ->    20 states; near: Sun:1, Earth:19
 Apollo 11                     273 reference ->    22 states; near: Sun:1, Earth:21
 
-bodies.js: 5259 KB
+bodies.js: 5294 KB
 moons.js: 8674 KB
 probes.js: 5924 KB

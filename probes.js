@@ -1,5 +1,5 @@
 // probes.js: spacecraft.
-// Source: JPL Horizons (https://ssd.jpl.nasa.gov/horizons/), retrieved 2026-10-18. Physical data: Horizons, JPL SBDB, and the
+// Source: JPL Horizons (https://ssd.jpl.nasa.gov/horizons/), retrieved 2026-10-19. Physical data: Horizons, JPL SBDB, and the
 // published values cited in each object's radiusSrc. Launch dates: CelesTrak SATCAT.
 // Frame: ecliptic J2000 (ICRF), heliocentric unless a state's center says otherwise. Units: AU, AU/day, TDB Julian days.
 // Each object: t[] state times, c[] index into centers[] (Horizons IDs, '10' = Sun), s[] = x,y,z,vx,vy,vz per state.

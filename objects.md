@@ -50,24 +50,25 @@ Haumea, Eris, Arrokoth, and Didymos use their small-body solutions: their system
 | Arrokoth | 486958; |
 | Didymos (Dimorphos shown with it) | 65803; |
 | Halley's Comet | DES=1P;CAP<1995; (1986 apparition solution) |
+| Comet Grigg-Skjellerup (added 2026-10-19 for Giotto) | DES=26P;CAP<1995; |
 
 ## Deep-space probes
 
-Spans are the data in `probes.js` (Horizons coverage, cut where tracking ends). Positions after 2026-10-18 are Horizons predictions and are labeled that way in the app. Launch dates are from CelesTrak's satellite catalog.
+Spans are the data in `probes.js` (Horizons coverage, cut where tracking ends). "Rebuilt" probes aren't in Horizons; their paths come from the dated events in `probe-events.md` (`probes-rebuilt.js`), approximate between encounters. Positions after 2026-10-18 are Horizons predictions and are labeled that way in the app. Launch dates are from CelesTrak's satellite catalog.
 
 | Probe | Horizons ID | Launched | Span | Where tracking ends |
 |---|---|---|---|---|
-| Luna 1 | (reconstructed, step 3) | 1959 | not built yet | |
+| Luna 1 | rebuilt (`luna1`) | 1959-01-02 | 1959-01-02 to 1959-01-05 | Contact lost about 62 hours after launch |
 | Mariner 2 | -2 | 1962-08-27 | 1962-08-27 to 1962-12-31 |  |
-| Mariner 4 | (reconstructed, step 3) | 1964 | not built yet | |
+| Mariner 4 | rebuilt (`mariner4`) | 1964-11-28 | 1964-11-28 to 1967-12-21 | Communications ended |
 | Pioneer 10 | -23 | 1972-03-03 | 1972-03-03 to 2036-01-01 (predicted after 2026-10-18) |  |
 | Pioneer 11 | -24 | 1973-04-06 | 1973-04-06 to 2036-01-01 (predicted after 2026-10-18) |  |
-| Mariner 10 | (reconstructed, step 3) | 1973 | not built yet | |
-| Viking 1 | (reconstructed, step 3) | 1975 | not built yet | |
-| Viking 2 | (reconstructed, step 3) | 1975 | not built yet | |
+| Mariner 10 | rebuilt (`mariner10`) | 1973-11-03 | 1973-11-03 to 1975-03-24 | Attitude-control gas ran out |
+| Viking 1 | rebuilt (`viking1`) | 1975-08-20 | 1975-08-20 to 1980-08-17 | Operations ended |
+| Viking 2 | rebuilt (`viking2`) | 1975-09-09 | 1975-09-09 to 1978-07-25 | Turned off |
 | Voyager 1 | -31 | 1977-09-05 | 1977-09-05 to 2036-01-01 (predicted after 2026-10-18) |  |
 | Voyager 2 | -32 | 1977-08-20 | 1977-08-20 to 2036-01-01 (predicted after 2026-10-18) |  |
-| Giotto | (reconstructed, step 3) | 1985 | not built yet | |
+| Giotto | rebuilt (`giotto`) | 1985-07-02 | 1985-07-02 to 1992-07-23 | Operations ended |
 | Galileo | -77 | 1989-10-18 | 1989-10-19 to 2003-09-21 | Entered Jupiter on 2003-09-21 |
 | Ulysses | -55 | 1990-10-06 | 1990-10-06 to 2036-01-01 (predicted after 2026-10-18) |  |
 | NEAR Shoemaker | -93 | 1996-02-17 | 1996-02-19 to 2001-02-12 | Reached the surface of Eros on 2001-02-12 |

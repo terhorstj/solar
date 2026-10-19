@@ -62,6 +62,7 @@ SMALL = [
     ("486958;", "2486958", "Arrokoth", "kbo", "#c48a6a", "486958"),
     ("65803;", "2065803", "Didymos", "asteroid", "#a29a8e", "65803"),
     ("DES=1P;CAP<1995;", "1P", "Halley's Comet", "comet", "#9fd3e6", "1P"),
+    ("DES=26P;CAP<1995;", "26P", "Comet Grigg-Skjellerup", "comet", "#9fd3e6", "26P"),   # Giotto's second comet (1992)
 ]
 
 # Radii that neither Horizons nor the SBDB provides (km, volume-equivalent mean radius).

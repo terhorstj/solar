@@ -1232,6 +1232,8 @@
 <script src="bodies.js"></script>
 <script src="moons.js"></script>
 <script src="probes.js"></script>
+<!-- probes Horizons does not have, rebuilt from dated mission events (approximate); a 404 here just leaves them out -->
+<script src="probes-rebuilt.js"></script>
 <!-- naked-eye stars for the backdrop (HYG v3, CC BY-SA 4.0); a 404 here just means a black sky -->
 <script src="sky.js"></script>
 <script>
@@ -1365,7 +1367,11 @@ const SUN = { id:"10", name:"Sun", kind:"star", radiusKm:SUNMETA.radiusKm, color
 OBJS.push(SUN);
 for (const b of DATA.bodies){ ephAdd(b); OBJS.push(Object.assign({}, b)); }
 for (const m of (DATA.moons || [])){ ephAdd(m); OBJS.push(Object.assign({}, m)); }
-for (const p of (DATA.probes || [])){ ephAdd(p); OBJS.push(Object.assign({}, p)); }
+for (const p of (DATA.probes || []).concat(DATA.rebuilt || [])){
+  const missing = p.centers.filter(c => c !== SUN_ID && !EPH[c]);
+  if (missing.length){ console.warn(p.name + " skipped: its data needs " + missing.join(", ") + ", which isn't loaded (an out-of-date data file?)"); continue; }
+  ephAdd(p); OBJS.push(Object.assign({}, p));
+}
 const BYID = {};
 for (const o of OBJS){
   BYID[o.id] = o;
@@ -1794,6 +1800,7 @@ function tipHTML(o){
   const d = Math.hypot(o.wp[0], o.wp[1], o.wp[2]);
   let sub = o === SUN ? "Star" : kindText(o) + " · " + d.toFixed(2) + " AU from the Sun";
   if (o.craft && o.on && simT > BUILT_JD) sub += " · predicted";
+  if (o.rebuilt) sub += " · reconstructed";
   return o.name + '<span class="tip-sub">' + sub + "</span>";
 }
 function showTip(o, x, y){ tip.innerHTML = tipHTML(o); tip.style.left = x+"px"; tip.style.top = y+"px"; tip.style.opacity = 1; }
@@ -1878,9 +1885,10 @@ function buildCard(){
   const btn = (o === focus) ? '<div class="here-note">◉ Camera following</div>' : '<button class="go-btn" id="go">▸ FLY HERE</button>';
   $("#info").innerHTML =
     '<div class="name">' + o.name + '</div>' +
-    '<div class="desig">' + (o === SUN ? "THE SUN" : KIND_LABEL[o.kind].toUpperCase() + " · HORIZONS " + o.id) + '</div>' +
+    '<div class="desig">' + (o === SUN ? "THE SUN" : KIND_LABEL[o.kind].toUpperCase() + (o.rebuilt ? " · " + o.intdes : " · HORIZONS " + o.id)) + '</div>' +
     '<div class="badges"><span class="cls" style="color:' + o.color + ';border-color:' + o.color + '66">' + kind + '</span>' +
-      '<span class="sflag" id="cv-pred" style="display:none">PREDICTED POSITION</span></div>' +
+      '<span class="sflag" id="cv-pred" style="display:none">PREDICTED POSITION</span>' +
+      (o.rebuilt ? '<span class="sflag">RECONSTRUCTED</span>' : '') + '</div>' +
     '<div class="status" id="cv-status"></div>' +
     (o.note ? '<div class="status">' + o.note + '</div>' : '') +
     '<table>' + rows.join("") + '</table>' + btn;
@@ -1910,7 +1918,10 @@ function refreshCard(force){
     const v = speedKms(o, o.par); set("speed", v == null ? "-" : v.toFixed(2) + " km/s");
   }
   if (o.radiusKm) set("radius", (o.radiusKm < 10 ? o.radiusKm.toFixed(2) : Math.round(o.radiusKm).toLocaleString()) + " km");
-  if (o.craft){ set("launch", o.launch || "-"); set("data", "JPL Horizons, " + o.dataStart + " to " + o.dataEnd); }
+  if (o.craft){
+    set("launch", o.launch || "-");
+    set("data", (o.rebuilt ? "Rebuilt from NASA mission dates, " : "JPL Horizons, ") + o.dataStart + " to " + o.dataEnd);
+  }
 }
 
 // ===========================================================================

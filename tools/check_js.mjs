@@ -16,10 +16,11 @@ vm.createContext(ctx);
 vm.runInContext(readFileSync(path.join(ROOT, "bodies.js"), "utf8"), ctx);
 vm.runInContext(readFileSync(path.join(ROOT, "moons.js"), "utf8"), ctx);
 vm.runInContext(readFileSync(path.join(ROOT, "probes.js"), "utf8"), ctx);
+vm.runInContext(readFileSync(path.join(ROOT, "probes-rebuilt.js"), "utf8"), ctx);
 vm.runInContext("const SUNMETA = window.SOLAR_DATA_SUN;\n" + ephem +
-  "\nfor (const o of window.SOLAR_DATA.bodies.concat(window.SOLAR_DATA.moons, window.SOLAR_DATA.probes)) ephAdd(o);\nthis.ephPos = ephPos;", ctx);
+  "\nfor (const o of window.SOLAR_DATA.bodies.concat(window.SOLAR_DATA.moons, window.SOLAR_DATA.probes, window.SOLAR_DATA.rebuilt)) ephAdd(o);\nthis.ephPos = ephPos;", ctx);
 
-const objs = ctx.window.SOLAR_DATA.bodies.concat(ctx.window.SOLAR_DATA.moons, ctx.window.SOLAR_DATA.probes);
+const objs = ctx.window.SOLAR_DATA.bodies.concat(ctx.window.SOLAR_DATA.moons, ctx.window.SOLAR_DATA.probes, ctx.window.SOLAR_DATA.rebuilt);
 let seed = 12345;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const samples = [];

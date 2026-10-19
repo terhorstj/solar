@@ -71,8 +71,16 @@ Two NSSDCA catalog entries (Luna 1, `1959-012A`, and Giotto, `1985-056A`) return
 | End of operations | 1992-07-23 | | NSSDCA Giotto page: "After the P/Grigg-Skjellerup encounter operation were terminated on 23 July 1992." | Documented |
 | Later Earth pass (unpowered) | 1999-07-01 02:40 | about 219,000 km | NSSDCA Giotto page: "Giotto flew by the Earth on 1 July 1999 at a closest approach of about 219,000 km at approximately 02:40 UT" | Documented. Optional: this would extend Giotto's track past its 1992 shutdown. |
 
-## Questions for John
+## Decisions (John, 2026-10-19) and what the build found
 
-1. **Unconfirmed values.** Please confirm or correct the "memory, unconfirmed" values: Luna 1's launch time, Moon-flyby date and distance, and solar-orbit period; Mariner 10's launch time; Giotto's Halley time (14 March 00:03 UT) and its 1990 Earth flyby.
-2. **When each track ends.** Should a probe's track stop at end of mission (as listed), or continue on its final orbit after contact ended? Mariner 2 in Horizons stops at end of mission. Continuing would keep Mariner 4, Mariner 10, Luna 1, and Giotto visible in their solar orbits to 2035, labeled "predicted."
-3. **Viking in Mars orbit.** The NSSDCA orbit sizes are known, but not the orbits' orientation. I'd draw each Viking orbiter on an ellipse of the right size and period, tilted to the published inclination where known, and label its position along the orbit as approximate. Is that acceptable?
+- **Unconfirmed values:** use these best guesses. Also used, from memory: Mariner 10's second and third Mercury passes at 20:59 and 22:39 UT; Giotto's launch at 11:23 UT and its Earth flyby at 12:00 UT; Grigg-Skjellerup at 15:19 UT; Luna 1's loss of contact about 62 hours after launch; Viking launch times (21:22 and 18:39 UT) and Mars arrivals at 12:00 UT.
+- **Tracks end at end of mission.**
+- **Vikings:** ellipses of the published sizes around Mars, in the plane of the arrival path. Each orbit change happens at the nearest closest-approach point to its documented date.
+
+The rebuilt paths pass each body at exactly the documented distance and time. Physics checks (`tools/reconstruct-report.txt`):
+
+- **Giotto's Earth flyby (from memory) checks out.** It arrives at 3.518 km/s and leaves at 3.465 km/s relative to Earth. The legs need a 64.8 degree turn, and a pass at 22,730 km gives 63.9 degrees. Both the date and the distance fit an unpowered flyby.
+- **Mariner 10 at Venus and between its second and third Mercury passes checks out.** At Venus it arrives at 8.186 and leaves at 8.179 km/s, needing a 33.9 degree turn that the 5,768 km pass gives as 33.8 degrees. Between the Mercury passes, 9.677 vs. 9.679 km/s.
+- **Mariner 10's first Mercury pass doesn't fully fit.** The legs need a 22.3 degree turn, but a 704 km pass gives 7.4 degrees. The path has a small kink there, most likely from course corrections that aren't modeled.
+- **Luna 1** ends up in a 460-day solar orbit once clear of Earth, close to the recalled 450 days.
+- **Mariner 4's speed doesn't match.** The rebuild passes Mars at 5.1 km/s, but NSSDCA says "approximately 7 km/sec relative to Mars." Unresolved.

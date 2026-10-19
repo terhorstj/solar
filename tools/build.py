@@ -336,6 +336,8 @@ def main():
     for cmd, did, name, kind, color, sb in catalog.DWARFS + catalog.SMALL:
         zone[did] = max(soi_radius(eph, did, gm_sun), SMALL_ZONE_AU)
         center_cmd[did] = cmd
+    # (the Moon is deliberately not a center: it's stored only to 1% of its distance from Earth, about 3,800 km,
+    # and craft tracked relative to it inherited that error; tried and reverted 2026-10-19)
     meta_out["zones"] = zone
     names = {did: name for cmd, did, name, kind, color, sb in entries}
 
