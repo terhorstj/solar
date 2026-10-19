@@ -6,7 +6,7 @@ Positions come from NASA JPL's Horizons system, not from guesses or idealized or
 
 It's one self-contained `index.html` plus sibling data files. No build step for the page, no framework, no server.
 
-**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 9 visited asteroids and comets, 40 spacecraft, and 10 Earth-orbiters, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. Still to come: a deploy script for hosting. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
+**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 9 visited asteroids and comets, 40 spacecraft, and 10 Earth-orbiters, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
 
 ## Run it
 
@@ -67,6 +67,17 @@ Leave it untouched for a couple of minutes and the view begins, very slowly, to 
 - **Times** are in TDB, the time scale Horizons uses, which runs about a minute ahead of UTC. The date readout shows TDB as-is.
 
 **Data size.** About 20 MB of data files: bodies.js 5 MB (mostly Earth), moons.js 9 MB (mostly the fast inner moons Mimas, Enceladus, and Phobos), probes.js 6 MB (mostly Dawn's years circling Ceres).
+
+## Hosting
+
+The site is meant to live at https://uncharted.sqnp.org/solar/ (Apache on sqnp.org, a public folder inside the UNCHARTED site, which compresses the JavaScript in transit). `deploy.sh` uploads it; like UNCHARTED's, it's personal and kept out of git.
+
+```
+./deploy.sh -n    # dry run: lists what would upload, changes nothing
+./deploy.sh       # deploy
+```
+
+It uploads `index.html` and the six data files to `/home/john/www/sqnp/uncharted/solar/`, nothing else, and never deletes. The uploaded `index.html` is a temporary copy whose data-file addresses carry the deploy time (`bodies.js?v=...`). Visitors' browsers then fetch fresh data after each deploy, instead of pairing a cached old data file with the new page.
 
 ## Rebuilding the data
 
