@@ -53,7 +53,8 @@ sibling file or inline, so the app runs fully offline.
     Science Data Coordinated Archive (NSSDCA) and NASA mission pages, cited
     in `probe-events.md`.
 
-  • Spacecraft launch dates: CelesTrak satellite catalog (SATCAT),
+  • Spacecraft launch and reentry dates, and Earth-orbiter elements:
+    CelesTrak satellite catalog (SATCAT) and GP element data,
     https://celestrak.org.
 
   • Radii of Haumea, Makemake, Eris, and Arrokoth: the published papers cited

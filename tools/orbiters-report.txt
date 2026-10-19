@@ -1,0 +1,11 @@
+Orbiters report, 2026-10-19.
+ISS         elements 2026-10-19T10:26:22 UTC: 415 x 424 km, 51.63 deg
+Hubble      elements 2026-10-19T11:38:56 UTC: 468 x 471 km, 28.47 deg
+Tiangong    elements 2026-10-19T09:40:26 UTC: 384 x 386 km, 41.47 deg
+Chandra     elements 2026-10-20T15:59:30 UTC: 12649 x 136195 km, 57.87 deg
+Vanguard 1  elements 2026-10-19T01:49:31 UTC: 651 x 3819 km, 34.25 deg
+Telstar 1   elements 2026-10-19T12:51:29 UTC: 947 x 5638 km, 44.79 deg
+Sputnik 1   1957-10-04 to 1958-01-03: 215 x 939 km shrinking to 64 x 939 km, 65.10 deg
+Explorer 1  1958-02-01 to 1970-03-31: 358 x 2550 km shrinking to 183 x 215 km, 33.15 deg
+Skylab      1973-05-14 to 1979-07-11: 434 x 442 km shrinking to 221 x 227 km, 50.00 deg
+Mir         1986-02-19 to 2001-03-23: 350 x 375 km shrinking to 151 x 215 km, 51.64 deg

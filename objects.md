@@ -111,7 +111,7 @@ Horizons has the S-IVB stage, not the crewed spacecraft. The stage flew with the
 | Apollo 8 | -399080 | 1968-12-21 | 1968-12-21 to 1968-12-31 |  |
 | Apollo 11 | -399110 | 1969-07-16 | 1969-07-16 to 1969-07-28 |  |
 
-## Earth-orbiters (CelesTrak catalog numbers)
+## Earth-orbiters (CelesTrak catalog numbers; built 2026-10-19, see earth-orbiters.md)
 
 | Object | NORAD | Source | Lifetime |
 |---|---|---|---|

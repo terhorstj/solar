@@ -6,11 +6,11 @@ Positions come from NASA JPL's Horizons system, not from guesses or idealized or
 
 It's one self-contained `index.html` plus sibling data files. No build step for the page, no framework, no server.
 
-**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 9 visited asteroids and comets, and 40 spacecraft, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. Still to come: the Earth-orbiters. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
+**Status: in development.** The Sun, the 8 planets, 21 moons, 5 dwarf planets, 9 visited asteroids and comets, 40 spacecraft, and 10 Earth-orbiters, from Sputnik's launch (1957-10-04) through 2035. Behind it all is the real naked-eye sky. Still to come: a deploy script for hosting. The full object list is in [`objects.md`](objects.md) and the plan is in [`PLAN.md`](PLAN.md).
 
 ## Run it
 
-Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. Keep `bodies.js`, `moons.js`, `probes.js`, `probes-rebuilt.js`, and `sky.js` next to it. It opens on today's date.
+Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. Keep `bodies.js`, `moons.js`, `probes.js`, `probes-rebuilt.js`, `orbiters.js`, and `sky.js` next to it. It opens on today's date.
 
 ## Controls
 
@@ -26,7 +26,7 @@ Open **`index.html`**: double-click it or drag it into a browser. It runs fully 
 | **◀ ❚❚ ▶** | play backward, pause, play forward (space bar toggles play) |
 | **Speed chips** | 1 hour, 1 day, 1 week, 1 month, or 1 year per second |
 | **NOW** | jump to today |
-| **Show** panel | turn planets, moons, dwarf planets, asteroids and comets, or spacecraft on and off |
+| **Show** panel | turn planets, moons, dwarf planets, asteroids and comets, spacecraft, or Earth-orbiters on and off |
 
 Leave it untouched for a couple of minutes and the view begins, very slowly, to turn.
 
@@ -39,6 +39,7 @@ Leave it untouched for a couple of minutes and the view begins, very slowly, to 
 - **Spacecraft trails.** The craft you've selected or are following shows its full path so far. Every other craft shows a faint tail covering its last year.
 - **Predictions.** Horizons continues many spacecraft past today (for example Voyager 1 to 2035). Positions after the date the data was built (2026-10-18) are predictions: the card says "Predicted position," the time bar says so, and that part of a trail is dashed.
 - **Rebuilt probes.** Six early probes aren't in Horizons: Luna 1, Mariner 4, Mariner 10, Viking 1 and 2, and Giotto. Their paths are rebuilt from their dated mission events (see `probe-events.md`): coasting orbit legs that arrive at each target body's real position on the documented date, joined by curved passes at the documented closest distances. They're exact at each encounter and approximate in between, and their cards say "Reconstructed." The Vikings orbit Mars on ellipses of the published sizes, but the orbits' orientation isn't published, so it's approximate.
+- **Earth-orbiters** are rings around Earth, visible once you zoom in near it: the ISS, Hubble, Tiangong, Chandra, Vanguard 1, and Telstar 1 (still in orbit), and Sputnik 1, Explorer 1, Skylab, and Mir (reentered). Within a week of the current elements' date, a marker shows where each current one actually is. Checked against JPL's tracks of the ISS and Hubble, it stays within about 55 km over that week. Each ring's orientation drifts the way Earth's equatorial bulge turns real orbits. The reentered ones shrink from their first orbit to their final one over their lifetimes. Their orientation, and where they were along the orbit, are approximate, and their cards say so. Sources: `earth-orbiters.md`.
 - **Where tracking ends.** A craft disappears at the end of its data. When the end is an event, the card says so: entering Jupiter (Galileo) or Saturn (Cassini), crashing into Mercury (MESSENGER), landing (Curiosity, Perseverance, NEAR on Eros, Rosetta on its comet), or DART's impact.
 
 ## Data and accuracy
@@ -75,6 +76,7 @@ The scripts use only Python's standard library. Downloads and fits are cached in
 python3 tools/build.py       # fetch, choose snapshots, write bodies.js, moons.js, probes.js
 python3 tools/reconstruct.py # rebuild the six probes Horizons lacks, write probes-rebuilt.js (run after build.py)
 python3 tools/make_sky.py    # write sky.js from Star Explorer's stars.js (expects ../uncharted/starmap-real/stars.js)
+python3 tools/make_orbiters.py  # fetch current CelesTrak elements, write orbiters.js (rerun to refresh the live markers)
 python3 tools/validate.py    # check against held-out Horizons samples (exit code 1 on failure)
 node tools/check_js.mjs      # check the page's math against the Python
 ```
@@ -87,6 +89,7 @@ bodies.js         Sun, planets, dwarf planets, asteroids and comets (generated)
 moons.js          moons, relative to their planets (generated)
 probes.js         spacecraft (generated)
 probes-rebuilt.js probes Horizons doesn't have, rebuilt from mission dates (generated)
+orbiters.js       Earth-orbiters: current elements and historical orbits (generated)
 sky.js            naked-eye stars for the backdrop (generated; CC BY-SA 4.0, from HYG v3)
 tools/
   catalog.py      every object: Horizons IDs, names, colors, special cases
@@ -97,9 +100,11 @@ tools/
   check_js.mjs    page-vs-Python math check
   make_sky.py     builds sky.js
   reconstruct.py  rebuilds the six missing probes; reconstruct-report.txt has its physics checks
+  make_orbiters.py  builds orbiters.js
   build-report.txt, build-meta.json, accuracy-report.txt
 objects.md        the full object list with Horizons IDs and coverage
 probe-events.md   dated mission events and sources for the rebuilt probes
+earth-orbiters.md sources for the Earth-orbiters
 PLAN.md           the plan
 LICENSE           proprietary code + third-party data credits
 ```
@@ -108,7 +113,7 @@ LICENSE           proprietary code + third-party data credits
 
 - **JPL Horizons**, Solar System Dynamics Group, NASA/JPL-Caltech: positions, masses, and radii.
 - **JPL Small-Body Database**: small-body radii and masses.
-- **CelesTrak** satellite catalog: launch dates.
+- **CelesTrak** satellite catalog and current orbital elements (GP data): launch and reentry dates, Earth-orbiter orbits.
 - **NASA NSSDCA** and NASA mission pages: the mission events behind the rebuilt probes (cited in `probe-events.md`).
 - **HYG Database v3**, David Nash / astronexus, CC BY-SA 4.0: the backdrop stars (`sky.js` is a derivative and is likewise CC BY-SA 4.0).
 - **NASA Saturnian Rings Fact Sheet**: ring radii.

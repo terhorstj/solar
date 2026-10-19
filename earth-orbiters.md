@@ -75,8 +75,9 @@ These use current CelesTrak elements, fetched when the data is built: size, incl
 - **Live marker:** within a week of the elements' date, a marker shows where the object actually is (SGP4, the standard satellite model, via the satellite.js library bundled into the page). Farther from that date, the ring shows without a marker.
 - **Scale:** these rings are tiny (the ISS ring is 6% bigger than Earth), so they only show when you're zoomed in near Earth, with the same minimum-size rule as everything else.
 
-## Questions for John
+## Decisions (John, 2026-10-19) and what the build found
 
-1. **Unconfirmed values.** Please confirm or correct the "memory" values: Sputnik 1's 215 x 939 km, Explorer 1's 358 x 2,550 km, and Mir's typical 350 x 375 km.
-2. **Decaying orbits.** Explorer 1 shrank from 358 x 2,550 km to 183 x 215 km over 12 years. Should a historical ring shrink smoothly from its first orbit to its final one over its lifetime, or stay at the first orbit? I'd suggest shrinking. It's a ballpark either way, but it shows that these orbits decay. Skylab and Mir would also shrink toward their final orbits.
-3. **Current objects over their whole lifetime.** The six current ones would show from launch to 2035 at today's orbit size (the ISS has been reboosted many times, and Hubble has sunk slowly). Is that acceptable as a ballpark, with the live marker only near today?
+- **Memory values used** as listed. Sputnik 1's catalog "final" apogee (1,080 km) is higher than its first (939 km), which a decaying orbit can't do, so no ring is ever allowed to grow: final sizes are capped at the first.
+- **Historical rings shrink** from first to final orbit over the lifetime, faster near the end (the square of the fraction of the lifetime).
+- **Current objects** show at today's size from launch to 2035, with the live marker within 7 days of the elements' date.
+- **No satellite.js.** The marker uses two-body motion plus the bulge's drift instead of SGP4. Checked against JPL Horizons' own tracks: the ISS within 31 to 53 km and Hubble within 40 to 56 km, from 7 days before to 7 days after the elements' date. That's more than enough for a marker, without bundling a library.

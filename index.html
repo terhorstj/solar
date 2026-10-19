@@ -1234,6 +1234,8 @@
 <script src="probes.js"></script>
 <!-- probes Horizons does not have, rebuilt from dated mission events (approximate); a 404 here just leaves them out -->
 <script src="probes-rebuilt.js"></script>
+<!-- Earth-orbiters (CelesTrak elements; historical orbits from earth-orbiters.md); a 404 here just leaves them out -->
+<script src="orbiters.js"></script>
 <!-- naked-eye stars for the backdrop (HYG v3, CC BY-SA 4.0); a 404 here just means a black sky -->
 <script src="sky.js"></script>
 <script>
@@ -1358,10 +1360,11 @@ const MIN_PX = { "10":16, "199":6, "299":8, "399":8, "499":7, "599":12, "699":11
                  "301":5, "501":5, "502":5, "503":5, "504":5, "606":5, "801":5 };
 const MIN_PX_KIND = { dwarf:5, moon:4, asteroid:4, comet:4, kbo:4 };
 const KIND_LABEL = { star:"Star", planet:"Planet", moon:"Moon", dwarf:"Dwarf planet", asteroid:"Asteroid", comet:"Comet",
-                     kbo:"Kuiper belt object", probe:"Spacecraft", observatory:"Space telescope", apollo:"Apollo mission" };
+                     kbo:"Kuiper belt object", probe:"Spacecraft", observatory:"Space telescope", apollo:"Apollo mission",
+                     orbiter:"Earth-orbiter" };
 const CAT_OF = { planet:"planets", moon:"moons", dwarf:"dwarfs", asteroid:"small", comet:"small", kbo:"small",
-                 probe:"craft", observatory:"craft", apollo:"craft", star:"sun" };
-const PRI = { star:6, planet:5, dwarf:4, probe:3, observatory:3, apollo:3, moon:2, asteroid:2, comet:2, kbo:2 };
+                 probe:"craft", observatory:"craft", apollo:"craft", star:"sun", orbiter:"orbiters" };
+const PRI = { star:6, planet:5, dwarf:4, probe:3, observatory:3, apollo:3, orbiter:3, moon:2, asteroid:2, comet:2, kbo:2 };
 const OBJS = [];
 const SUN = { id:"10", name:"Sun", kind:"star", radiusKm:SUNMETA.radiusKm, color:"#fff1c9", t0:-Infinity, t1:Infinity };
 OBJS.push(SUN);
@@ -1371,6 +1374,10 @@ for (const p of (DATA.probes || []).concat(DATA.rebuilt || [])){
   const missing = p.centers.filter(c => c !== SUN_ID && !EPH[c]);
   if (missing.length){ console.warn(p.name + " skipped: its data needs " + missing.join(", ") + ", which isn't loaded (an out-of-date data file?)"); continue; }
   ephAdd(p); OBJS.push(Object.assign({}, p));
+}
+const _ymdJd = (s) => Date.UTC(+s.slice(0,4), +s.slice(5,7) - 1, +s.slice(8,10)) / 86400000 + 2440587.5;
+for (const s of (DATA.orbiters || [])){   // last in OBJS: their positions follow Earth's, computed earlier each frame
+  OBJS.push(Object.assign({}, s, { orbiter:true, t0:_ymdJd(s.launch), t1: s.decay ? _ymdJd(s.decay) + 1 : Infinity }));
 }
 const BYID = {};
 for (const o of OBJS){
@@ -1481,7 +1488,7 @@ for (const o of OBJS){
     o.glow = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW_TEX, color:0xffd98a, transparent:true, opacity:0.75, blending:THREE.AdditiveBlending, depthWrite:false }));
     o.glow.scale.set(7, 7, 1);   // in Sun radii (child of the scaled group)
     o.mesh.add(o.glow);
-  } else if (o.craft){
+  } else if (o.craft || o.orbiter){
     o.mesh = new THREE.Sprite(new THREE.SpriteMaterial({ map:PROBE_TEX, color:new THREE.Color(o.color), transparent:true, depthWrite:false }));
   } else {
     const col = new THREE.Color(o.color);
@@ -1596,7 +1603,7 @@ renderer.autoClear = false;
 //      frame with vertex 0 exactly on the body, so the line passes through it at any zoom ----
 const ORBIT_N = 256;
 for (const o of OBJS){
-  if (o.craft || o.kind === "star") continue;
+  if (o.craft || o.orbiter || o.kind === "star") continue;
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array((ORBIT_N+1)*3), 3));
   const op = o.kind === "planet" ? 0.32 : o.kind === "moon" ? 0.24 : 0.2;
@@ -1637,6 +1644,69 @@ function updateOrbit(o){
   o.orbit.geometry.attributes.position.needsUpdate = true;
   o.orbitA = a;
   return true;
+}
+
+
+// ===========================================================================
+//  EARTH-ORBITERS (orbiters.js): rings around Earth, plus a live marker within a week of current elements.
+//  Two-body ellipse + the secular drift of node and perigee from Earth's equatorial bulge (J2); mirrors
+//  orbiter_pos() in tools/make_orbiters.py, which was checked against Horizons (ISS, Hubble: within ~55 km
+//  over +/- 7 days). Equator of date is treated as the J2000 equator. Historical rings shrink from their
+//  first orbit to their final one over their lifetime; their orientation along the equator is arbitrary.
+// ===========================================================================
+const RE_KM = 6378.137, J2E = 1.08262668e-3, MU_E_DAY = 398600.4418 * 86400 * 86400, LIVE_DAYS = 7;
+const ORB_N = 128;
+function orbElements(o, t){   // {a, e, i, raan, argp} (km, rad) at TDB day t, plus M (rad) for current objects
+  let a, e, i, raan0, argp0, t0, n;
+  if (o.cur){
+    const c = o.cur; a = c.a; e = c.e; i = c.i*Math.PI/180; raan0 = c.raan*Math.PI/180; argp0 = c.argp*Math.PI/180; t0 = c.epoch; n = c.n;
+  } else {
+    const h = o.hist, u = Math.min(1, Math.max(0, (t - o.t0) / (o.t1 - o.t0))), w = u*u;   // decay speeds up late in life
+    const rp = h.rp0 + (h.rp1 - h.rp0)*w, ra = h.ra0 + (h.ra1 - h.ra0)*w;
+    a = 0.5*(rp + ra); e = (ra - rp)/(ra + rp); i = h.i*Math.PI/180; raan0 = 0; argp0 = 0; t0 = o.t0;
+    n = Math.sqrt(MU_E_DAY / (a*a*a));
+  }
+  const p = a*(1 - e*e), k = 1.5*J2E*(RE_KM/p)*(RE_KM/p)*n, dt = t - t0, ci = Math.cos(i);
+  const el = { a, e, i, raan: raan0 - k*ci*dt, argp: argp0 + 0.5*k*(5*ci*ci - 1)*dt };
+  if (o.cur) el.M = o.cur.M0*Math.PI/180 + n*dt + o.cur.ndot*dt*dt;   // published mean motion already includes J2
+  return el;
+}
+const _cosE = Math.cos(OBLIQ), _sinE = Math.sin(OBLIQ);
+function orbPoint(el, E, out){   // geocentric point at eccentric anomaly E, ecliptic J2000, AU
+  const xo = el.a*(Math.cos(E) - el.e), yo = el.a*Math.sqrt(1 - el.e*el.e)*Math.sin(E);
+  const co = Math.cos(el.raan), so = Math.sin(el.raan), cw = Math.cos(el.argp), sw = Math.sin(el.argp), ci = Math.cos(el.i), si = Math.sin(el.i);
+  const x = (co*cw - so*sw*ci)*xo + (-co*sw - so*cw*ci)*yo;
+  const y = (so*cw + co*sw*ci)*xo + (-so*sw + co*cw*ci)*yo;
+  const z = (sw*si)*xo + (cw*si)*yo;
+  out[0] = x / AU_KM; out[1] = (_cosE*y + _sinE*z) / AU_KM; out[2] = (-_sinE*y + _cosE*z) / AU_KM;
+}
+function orbMarker(o, t, out){   // true if the live marker applies at t (current objects near their elements' date)
+  if (!o.cur || Math.abs(t - o.cur.epoch) > LIVE_DAYS) return false;
+  const el = orbElements(o, t);
+  let E = el.M;
+  for (let k = 0; k < 30; k++) E -= (E - el.e*Math.sin(E) - el.M) / (1 - el.e*Math.cos(E));
+  orbPoint(el, E, out);
+  return true;
+}
+const _op = [0, 0, 0];
+function updateOrbiterRing(o){
+  const el = orbElements(o, simT), arr = o.ring.geometry.attributes.position.array, ew = EARTH.wp;
+  for (let k = 0; k <= ORB_N; k++){
+    orbPoint(el, 2*Math.PI*k/ORB_N, _op);
+    writeLocal(arr, k, ew[0] + _op[0], ew[1] + _op[1], ew[2] + _op[2]);
+  }
+  o.ring.geometry.attributes.position.needsUpdate = true;
+  o.apoAU = el.a*(1 + el.e) / AU_KM;
+  o.oel = el;   // (o.el is the label element)
+}
+
+for (const o of OBJS){   // Earth-orbiter rings
+  if (!o.orbiter) continue;
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array((ORB_N+1)*3), 3));
+  o.ring = new THREE.Line(geo, new THREE.LineBasicMaterial({ color:new THREE.Color(o.color), transparent:true, opacity:0.45, depthWrite:false }));
+  o.ring.frustumCulled = false; o.ring.visible = false;
+  scene.add(o.ring);
 }
 
 // ---- spacecraft trails: built lazily the first time a craft needs one, sampled finely where the path curves ----
@@ -1727,13 +1797,19 @@ let playDir = 0;   // -1 backward, 0 paused, +1 forward
 const SPEEDS = [ { l:"1 hr/s", d:1/24 }, { l:"1 day/s", d:1 }, { l:"1 wk/s", d:7 }, { l:"1 mo/s", d:30.4375 }, { l:"1 yr/s", d:365.25 } ];
 let speedIdx = 2;
 let focus = SUN, selected = SUN;
-const CAT = { planets:true, moons:true, dwarfs:true, small:true, craft:true };
+const CAT = { planets:true, moons:true, dwarfs:true, small:true, craft:true, orbiters:true };
 const catOn = (o) => o.cat === "sun" || CAT[o.cat];
-const shown = (o) => o.on && catOn(o) && !o.hidden;
+const shown = (o) => o.on && catOn(o) && !o.hidden && (!o.orbiter || o.live);
 
 function computePositions(){
   for (const o of OBJS){
     if (o === SUN){ o.on = true; o.wp[0] = o.wp[1] = o.wp[2] = 0; continue; }
+    if (o.orbiter){   // at Earth; offset to its true place only when the live marker applies
+      o.on = simT >= o.t0 && simT <= o.t1 && EARTH.on;
+      o.live = o.on && orbMarker(o, simT, _op);
+      o.wp[0] = EARTH.wp[0] + (o.live ? _op[0] : 0); o.wp[1] = EARTH.wp[1] + (o.live ? _op[1] : 0); o.wp[2] = EARTH.wp[2] + (o.live ? _op[2] : 0);
+      continue;
+    }
     o.on = ephPos(o.id, simT, o.wp);
     if (o.on){ if (!o.last) o.last = new Float64Array(3); o.last.set(o.wp); }
   }
@@ -1748,9 +1824,10 @@ let flight = null;
 function ease(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
 function arriveDist(o){
   if (o.craft) return 0.02;
+  if (o.orbiter) return Math.max((o.apoAU || 7000/AU_KM) * 3.5, 4 * EARTH.rAU);   // the whole ring in view
   return Math.max(o.rAU * 8, 2e-6);   // a body fills a good part of the view, at true scale
 }
-function minDistFor(o){ return o.craft ? 2e-8 : Math.max(o.rAU * 1.3, 5e-9); }
+function minDistFor(o){ return (o.craft || o.orbiter) ? 2e-8 : Math.max(o.rAU * 1.3, 5e-9); }
 function flyTo(o, endDir){
   // fold any pan offset into the origin, so the glide starts exactly from the current view
   const tl = controls.target;
@@ -1799,6 +1876,7 @@ function kindText(o){ return o.kind === "moon" && o.par ? "Moon of " + o.par.nam
 function tipHTML(o){
   const d = Math.hypot(o.wp[0], o.wp[1], o.wp[2]);
   let sub = o === SUN ? "Star" : kindText(o) + " · " + d.toFixed(2) + " AU from the Sun";
+  if (o.orbiter && o.oel) sub = "Earth-orbiter · " + Math.round(o.oel.a*(1 - o.oel.e) - RE_KM).toLocaleString() + " to " + Math.round(o.oel.a*(1 + o.oel.e) - RE_KM).toLocaleString() + " km up · approximate";
   if (o.craft && o.on && simT > BUILT_JD) sub += " · predicted";
   if (o.rebuilt) sub += " · reconstructed";
   return o.name + '<span class="tip-sub">' + sub + "</span>";
@@ -1874,6 +1952,9 @@ function select(o){ selected = o; buildCard(); }
 function buildCard(){
   const o = selected, rows = [];
   const row = (k, id) => rows.push('<tr><td class="k">' + k + '</td><td class="v" id="cv-' + id + '">-</td></tr>');
+  if (o.orbiter){ row("Height above Earth", "alt"); row("Inclination", "inc"); row("Period", "period"); row("Launched", "launch");
+    row(o.decay ? "Reentered" : "Status", "decay"); row("Data", "data"); }
+  else {
   if (o.par) row("From " + o.par.name, "par");
   if (o !== SUN) row("From the Sun", "sun");
   if (o !== EARTH) row("From Earth", "earth");
@@ -1881,14 +1962,15 @@ function buildCard(){
   else if (o !== SUN) row(o.craft ? "Speed (vs. Sun)" : "Orbital speed", "speed");
   if (o.radiusKm) row("Radius", "radius");
   if (o.craft){ row("Launched", "launch"); row("Data", "data"); }
+  }
   const kind = kindText(o);
   const btn = (o === focus) ? '<div class="here-note">◉ Camera following</div>' : '<button class="go-btn" id="go">▸ FLY HERE</button>';
   $("#info").innerHTML =
     '<div class="name">' + o.name + '</div>' +
-    '<div class="desig">' + (o === SUN ? "THE SUN" : KIND_LABEL[o.kind].toUpperCase() + (o.rebuilt ? " · " + o.intdes : " · HORIZONS " + o.id)) + '</div>' +
+    '<div class="desig">' + (o === SUN ? "THE SUN" : KIND_LABEL[o.kind].toUpperCase() + (o.orbiter ? " · NORAD " + o.norad : o.rebuilt ? " · " + o.intdes : " · HORIZONS " + o.id)) + '</div>' +
     '<div class="badges"><span class="cls" style="color:' + o.color + ';border-color:' + o.color + '66">' + kind + '</span>' +
       '<span class="sflag" id="cv-pred" style="display:none">PREDICTED POSITION</span>' +
-      (o.rebuilt ? '<span class="sflag">RECONSTRUCTED</span>' : '') + '</div>' +
+      (o.rebuilt ? '<span class="sflag">RECONSTRUCTED</span>' : '') + (o.orbiter ? '<span class="sflag">APPROXIMATE</span>' : '') + '</div>' +
     '<div class="status" id="cv-status"></div>' +
     (o.note ? '<div class="status">' + o.note + '</div>' : '') +
     '<table>' + rows.join("") + '</table>' + btn;
@@ -1904,6 +1986,23 @@ function refreshCard(force){
   if (lastFocusShown !== focus){ lastFocusShown = focus; if (!force){ buildCard(); return; } }
   const set = (id, v) => { const el = document.getElementById("cv-" + id); if (el) el.textContent = v; };
   const st = $("#cv-status");
+  if (o.orbiter){
+    st.textContent = simT < o.t0 ? "Not launched yet at this date (launched " + o.launch + ")."
+      : simT > o.t1 ? "Reentered on " + o.decay + "."
+      : o.cur ? (o.live ? "" : "Position along the orbit is shown only within a week of its elements' date (" + o.cur.epochUtc.slice(0, 10) + "); the ring's orientation drifts as Earth's bulge turns it.")
+      : "Where it was along this orbit isn't known, and the ring's orientation is approximate; its size shrinks toward its final orbit over its lifetime.";
+    st.style.display = st.textContent ? "block" : "none";
+    $("#cv-pred").style.display = "none";
+    const el = orbElements(o, Math.min(Math.max(simT, o.t0), o.t1 === Infinity ? simT : o.t1));
+    set("alt", Math.round(el.a*(1 - el.e) - RE_KM).toLocaleString() + " to " + Math.round(el.a*(1 + el.e) - RE_KM).toLocaleString() + " km");
+    set("inc", (el.i*180/Math.PI).toFixed(1) + "°");
+    const per = 2*Math.PI*Math.sqrt(el.a*el.a*el.a/398600.4418)/60;
+    set("period", per < 120 ? per.toFixed(1) + " minutes" : (per/60).toFixed(1) + " hours");
+    set("launch", o.launch);
+    set("decay", o.decay || "In orbit");
+    set("data", o.cur ? "CelesTrak elements of " + o.cur.epochUtc.slice(0, 10) : "Published first and final orbits");
+    return;
+  }
   if (o.craft && simT < o.t0) st.textContent = "Not launched yet at this date" + (o.launch ? " (launched " + o.launch + ")." : ".");
   else if (o.craft && simT > o.t1) st.textContent = o.endNote || ("Horizons data ends " + o.dataEnd + ".");
   else if (!o.craft && o !== SUN && !o.on) st.textContent = "No data for this date.";
@@ -2004,7 +2103,8 @@ const LEGEND = [ { cat:"planets", label:"Planets", sw:'<span class="swatch" styl
                  { cat:"moons", label:"Moons", sw:'<span class="swatch" style="color:#c9c9c9;transform:scale(0.7)"></span>' },
                  { cat:"dwarfs", label:"Dwarf planets", sw:'<span class="swatch" style="color:#d9c3a5;transform:scale(0.8)"></span>' },
                  { cat:"small", label:"Asteroids and comets", sw:'<span class="swatch" style="color:#a8a096;transform:scale(0.6)"></span>' },
-                 { cat:"craft", label:"Spacecraft", sw:'<span class="swatch diamond" style="color:#ffd27a"></span>' } ];
+                 { cat:"craft", label:"Spacecraft", sw:'<span class="swatch diamond" style="color:#ffd27a"></span>' },
+                 { cat:"orbiters", label:"Earth-orbiters", sw:'<span class="swatch" style="color:#e8f2ff;background:transparent;border:1.5px solid currentColor;box-shadow:none"></span>' } ];
 $("#legend").innerHTML = '<div class="lh">SHOW</div>' + LEGEND.map(r =>
   '<div class="lrow" data-cat="' + r.cat + '" role="checkbox" aria-checked="true" tabindex="0"><span class="chk">✓</span>' + r.sw + r.label + '</div>').join("");
 function toggleCat(c){
@@ -2098,7 +2198,12 @@ function tick(){
     o.scr = (o.on && catOn(o)) ? screenOf(o) : null;
     if (!o.on || !catOn(o)){ o.mesh.visible = false; o.dispPx = 0; continue; }
     const d = Math.max(o.local.distanceTo(camera.position), 1e-15), wpp = worldPerPx(d);
-    if (o.craft){
+    if (o.orbiter){
+      o.mesh.scale.setScalar(wpp * 13);
+      o.dispPx = 13;
+      o.mesh.visible = o.live; o.mesh.position.copy(o.local);
+      continue;
+    } else if (o.craft){
       o.mesh.scale.setScalar(wpp * 18);
       o.dispPx = 18;
     } else {
@@ -2132,6 +2237,15 @@ function tick(){
     if (o.craft){
       if (CAT.craft && simT >= o.t0) updateTrail(o, o === selected || o === focus);
       else hideTrail(o);
+    }
+    if (o.orbiter){   // drawn only once the ring clears Earth's (possibly enlarged) disc on screen
+      let vis = o.on && catOn(o);
+      if (vis){
+        updateOrbiterRing(o);
+        const d = Math.max(EARTH.local.distanceTo(camera.position), 1e-15);
+        vis = o.apoAU / worldPerPx(d) > (EARTH.dispPx || 0)/2 + 3;
+      }
+      o.ring.visible = vis;
     }
   }
   // scale badge: describes the focused body, or (when following a spacecraft) the body nearest the camera
