@@ -1,0 +1,84 @@
+Build report, 2026-10-18. Range 1957-10-04 to 2036-01-01.
+
+Mercury                     28579 reference ->   956 states (tol 1e-06 x distance from Sun)
+Venus                       28579 reference ->   891 states (tol 1e-06 x distance from Sun)
+Earth                       28579 reference -> 28579 states (tol 1e-06 x distance from Sun)
+Mars                        28579 reference ->   826 states (tol 1e-06 x distance from Sun)
+Jupiter                     28579 reference ->  3154 states (tol 1e-06 x distance from Sun)
+Saturn                      28579 reference ->  1780 states (tol 1e-06 x distance from Sun)
+Uranus                      28579 reference ->   359 states (tol 1e-06 x distance from Sun)
+Neptune                     28579 reference ->   373 states (tol 1e-06 x distance from Sun)
+Ceres                       28579 reference ->   862 states (tol 1e-06 x distance from Sun)
+Pluto                       28579 reference ->  5717 states (tol 1e-06 x distance from Sun)
+Haumea                      28579 reference ->   207 states (tol 1e-06 x distance from Sun)
+Makemake                    28579 reference ->   207 states (tol 1e-06 x distance from Sun)
+Eris                        28579 reference ->   150 states (tol 1e-06 x distance from Sun)
+Vesta                       28579 reference ->   264 states (tol 1e-05 x distance from Sun)
+Eros                        28579 reference ->   261 states (tol 1e-05 x distance from Sun)
+67P/Churyumov-Gerasimenko   28579 reference ->   401 states (tol 1e-05 x distance from Sun)
+Ryugu                       28579 reference ->   287 states (tol 1e-05 x distance from Sun)
+Bennu                       28579 reference ->   287 states (tol 1e-05 x distance from Sun)
+Arrokoth                    28579 reference ->    70 states (tol 1e-05 x distance from Sun)
+Didymos                     28579 reference ->   271 states (tol 1e-05 x distance from Sun)
+Halley's Comet              28579 reference ->    97 states (tol 1e-05 x distance from Sun)
+
+Moon                         8370 reference ->  2476 states (tol 1e-02 x distance from planet)
+Phobos                     721977 reference -> 10379 states (tol 1e-02 x distance from planet)
+Deimos                     181290 reference ->   564 states (tol 1e-02 x distance from planet)
+Io                         129411 reference ->  2966 states (tol 1e-02 x distance from planet)
+Europa                      64402 reference ->   885 states (tol 1e-02 x distance from planet)
+Ganymede                    31976 reference ->   545 states (tol 1e-02 x distance from planet)
+Callisto                    13700 reference ->   217 states (tol 1e-02 x distance from planet)
+Mimas                      243508 reference -> 30681 states (tol 1e-02 x distance from planet)
+Enceladus                  167287 reference -> 11964 states (tol 1e-02 x distance from planet)
+Tethys                     121396 reference ->  5764 states (tol 1e-02 x distance from planet)
+Dione                       83644 reference ->  1938 states (tol 1e-02 x distance from planet)
+Rhea                        50618 reference ->   627 states (tol 1e-02 x distance from planet)
+Titan                       14334 reference ->    37 states (tol 1e-02 x distance from planet)
+Iapetus                      2884 reference ->    85 states (tol 1e-02 x distance from planet)
+Miranda                    162020 reference ->  1113 states (tol 1e-02 x distance from planet)
+Ariel                       90845 reference ->   326 states (tol 1e-02 x distance from planet)
+Umbriel                     55239 reference ->   268 states (tol 1e-02 x distance from planet)
+Titania                     26262 reference ->   239 states (tol 1e-02 x distance from planet)
+Oberon                      16992 reference ->   281 states (tol 1e-02 x distance from planet)
+Triton                      38934 reference ->    32 states (tol 1e-02 x distance from planet)
+Charon                      35816 reference ->     3 states (tol 1e-02 x distance from planet)
+
+Mariner 2                     735 reference ->    11 states; near: Sun:6, Venus:2, Earth:3
+Pioneer 10                  26467 reference ->    18 states; near: Sun:8, Earth:2, Jupiter:8
+Pioneer 11                  29699 reference ->    36 states; near: Sun:15, Earth:2, Jupiter:9, Saturn:10
+Voyager 1                   26254 reference ->    20 states; near: Sun:9, Earth:2, Jupiter:5, Saturn:4
+Voyager 2                   33148 reference ->    29 states; near: Sun:13, Earth:2, Jupiter:5, Saturn:3, Uranus:2, Neptune:4
+Galileo                     83613 reference ->   257 states; near: Sun:14, Venus:2, Earth:7, Jupiter:234; Entered Jupiter on 2003-09-21; tracking ends there.
+Ulysses                     18787 reference ->    23 states; near: Sun:18, Earth:2, Jupiter:3
+NEAR Shoemaker              13130 reference ->  1159 states; near: Sun:11, Eros:1143, Earth:5; Reached the surface of Eros on 2001-02-12; tracking ends there.; 1 jump(s) in Horizons' track: 2001-02-12
+Cassini-Huygens            204391 reference ->  1483 states; near: Sun:18, Venus:5, Earth:3, Jupiter:3, Saturn:1454; Entered Saturn on 2017-09-15; tracking ends there.; 1 jump(s) in Horizons' track: 2017-09-15
+Stardust                     6115 reference ->    42 states; near: Sun:23, Earth:19
+Rosetta                     25923 reference ->   600 states; near: Sun:22, Earth:12, Mars:1, 67P/Churyumov-Gerasimenko:565; Reached the surface of 67P/Churyumov-Gerasimenko on 2016-09-30; tracking ends there.
+MESSENGER                  652607 reference ->  3091 states; near: Sun:34, Mercury:3047, Venus:4, Earth:6; Crashed into Mercury on 2015-04-30, as planned; tracking ends there.
+New Horizons                13132 reference ->    16 states; near: Sun:10, Arrokoth:2, Earth:1, Jupiter:2, Pluto:1
+Dawn                       197384 reference -> 29923 states; near: Sun:44, Ceres:24687, Vesta:5184, Earth:4, Mars:4
+Juno                       140578 reference ->   965 states; near: Sun:9, Earth:4, Jupiter:952
+Curiosity                    1177 reference ->     9 states; near: Sun:3, Earth:3, Mars:3; Reached the surface of Mars on 2012-08-06; tracking ends there.
+Perseverance                 1242 reference ->     9 states; near: Sun:2, Earth:3, Mars:4; Reached the surface of Mars on 2021-02-18; tracking ends there.
+OSIRIS-REx                  29827 reference ->   376 states; near: Sun:27, Bennu:329, Earth:20; 4 jump(s) in Horizons' track: 2016-09-08, 2018-10-15, 2019-01-31, 2021-05-10
+Hayabusa2                   20129 reference ->  2822 states; near: Sun:37, Ryugu:2747, Earth:38; 15 jump(s) in Horizons' track: 2018-06-08, 2018-06-08, 2018-06-09, 2018-06-12
+Parker Solar Probe           6339 reference ->    58 states; near: Sun:50, Venus:7, Earth:1
+BepiColombo                 73379 reference ->   481 states; near: Sun:70, Mercury:399, Venus:4, Earth:8
+Solar Orbiter                7308 reference ->    53 states; near: Sun:36, Venus:13, Earth:4
+Lucy                         5816 reference ->    31 states; near: Sun:19, Earth:12
+DART                          576 reference ->     7 states; near: Sun:3, Didymos:1, Earth:3; Crashed into its target on 2022-09-26, as planned; tracking ends there.
+JUICE                        7127 reference ->    43 states; near: Sun:19, Venus:2, Earth:18, Jupiter:4
+Psyche                       2510 reference ->    32 states; near: Sun:28, Earth:2, Mars:2; 1 jump(s) in Horizons' track: 2027-01-31
+Europa Clipper              65753 reference ->   452 states; near: Sun:9, Earth:5, Mars:1, Jupiter:437; 1 jump(s) in Horizons' track: 2024-10-14
+Hera                         1907 reference ->    29 states; near: Sun:8, Didymos:18, Earth:2, Mars:1
+James Webb Space Telescope  85691 reference ->  1332 states; near: Earth:1332
+SOHO                       271299 reference ->  4330 states; near: Sun:1, Earth:4329; 2 jump(s) in Horizons' track: 1998-08-18, 1999-02-08
+Kepler                      10246 reference ->    20 states; near: Sun:11, Earth:9
+Spitzer                     12290 reference ->    21 states; near: Sun:13, Earth:8
+Apollo 8                      226 reference ->    20 states; near: Sun:1, Earth:19
+Apollo 11                     273 reference ->    22 states; near: Sun:1, Earth:21
+
+bodies.js: 5259 KB
+moons.js: 8674 KB
+probes.js: 5924 KB

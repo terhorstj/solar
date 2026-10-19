@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Claude Code local project settings
+.claude/
+
+# Horizons response cache (rebuilt automatically by tools/build.py)
+tools/cache/
+__pycache__/
+
+# personal maintenance and backup scripts (as in UNCHARTED)
+deploy.sh
+rs.sh
+
+# screen recordings and screenshots dropped in for diagnostics
+*.mov
+*.mp4
+Screenshot*.png
+Screen Recording*

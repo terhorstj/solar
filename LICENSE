@@ -1,0 +1,64 @@
+SOLAR SYSTEM EXPLORER: Proprietary Software License
+===================================================
+
+Copyright © 2026 John Terhorst. All Rights Reserved.
+
+This license applies to the ORIGINAL work in this project: the application
+source code, the data-preparation scripts, the visual design, the user
+interface, and all authored text, collectively the "Original Work". It does
+NOT apply to the third-party data and libraries bundled alongside it, which
+remain under their own terms (see below).
+
+No license or permission, whether express or implied, is granted to any person
+or entity to use, copy, reproduce, modify, adapt, translate, publish, display,
+distribute, sublicense, sell, or create derivative works from the Original
+Work, in whole or in part, by any means, without the prior written permission
+of the copyright holder.
+
+Unauthorized copying, distribution, or use of the Original Work, via any
+medium, is strictly prohibited.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+-----------------------------------------------------------------------------
+Third-party components and data
+
+The proprietary license above applies ONLY to the Original Work. The components
+below remain the property of their respective authors under their own terms.
+Nothing is loaded from a network at runtime: every component is bundled as a
+sibling file or inline, so the app runs fully offline.
+
+  • three.js and OrbitControls (r136 / v0.136.0): MIT License,
+    © 2010-2022 three.js authors, https://threejs.org. Vendored INLINE in
+    index.html; the MIT license notice is retained at the embed.
+
+  • Positions (`bodies.js`, `moons.js`, `probes.js`): derived from the JPL
+    Horizons system, Solar System Dynamics Group, Jet Propulsion Laboratory,
+    California Institute of Technology, https://ssd.jpl.nasa.gov/horizons/.
+    Small-body radii and masses: JPL Small-Body Database,
+    https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html. Credit: NASA/JPL-Caltech.
+
+  • HYG Database, version 3, by David Nash / astronexus: Creative Commons
+    Attribution-ShareAlike 4.0 International (CC BY-SA 4.0),
+    https://github.com/astronexus/HYG-Database. The file `sky.js` is a
+    filtered, reformatted subset of this database (directions, magnitudes,
+    and colors of the naked-eye stars) and is therefore itself licensed under
+    CC BY-SA 4.0. It is NOT covered by the proprietary terms above.
+
+  • Spacecraft launch dates: CelesTrak satellite catalog (SATCAT),
+    https://celestrak.org.
+
+  • Radii of Haumea, Makemake, Eris, and Arrokoth: the published papers cited
+    in `tools/catalog.py`.
+
+  • Saturn ring radii: NASA Saturnian Rings Fact Sheet (NSSDCA).
+    Saturn pole orientation: IAU Working Group on Cartographic Coordinates
+    and Rotational Elements, 2015 report.
+
+-----------------------------------------------------------------------------
+This is an unofficial personal project and is not affiliated with, sponsored
+by, or endorsed by NASA, JPL, or any of the data providers named above.
