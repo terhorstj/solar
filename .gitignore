@@ -17,3 +17,6 @@ rs.sh
 *.mp4
 Screenshot*.png
 Screen Recording*
+
+# personal wallpaper renders (tools/make_wallpaper.py)
+wallpapers/
