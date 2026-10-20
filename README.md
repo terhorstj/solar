@@ -10,7 +10,7 @@ It's one self-contained `index.html` plus sibling data files. No build step for 
 
 ## Run it
 
-Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. Keep `bodies.js`, `moons.js`, `probes.js`, `probes-rebuilt.js`, `orbiters.js`, and `sky.js` next to it. It opens on today's date.
+Open **`index.html`**: double-click it or drag it into a browser. It runs fully offline. A loading screen covers the few seconds while the data files load and the scene builds behind it. Keep `bodies.js`, `moons.js`, `probes.js`, `probes-rebuilt.js`, `orbiters.js`, and `sky.js` next to it. It opens on today's date.
 
 ## Controls
 

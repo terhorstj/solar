@@ -97,9 +97,67 @@
   .lbl.probe { color: #ffe2a8; }
   .lbl:hover { color: #fff; }
   .rlbl { position: absolute; font-size: 11px; font-weight: 400; letter-spacing: 0.5px; color: #8fd0ff; background: rgba(6,10,18,0.66); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(143,208,255,0.28); transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none; }
+
+  /* ---- LOADING SCREEN (UNCHARTED's splash, adapted): covers the page while the data files load and the scene
+     builds behind it. Its glow and blink are compositor animations, so they keep moving through the blocking work. */
+  #splash { position: fixed; inset: 0; z-index: 100000; background: #04060c; color: #cfe0f5;
+    font: 13px ui-monospace, "SFMono-Regular", monospace; letter-spacing: 3px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    opacity: 1; transition: opacity 0.7s ease; }
+  #splash.done { opacity: 0; pointer-events: none; }
+  #splash::before {   /* soft glow behind the title */
+    content: ''; position: absolute; left: 50%; top: 40%; width: 70vw; height: 46vh; transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, rgba(255,214,150,0.16), rgba(150,170,220,0.05) 45%, transparent 70%);
+    animation: sp-pulse 4s ease-in-out infinite; }
+  #splash::after {    /* sparse starfield */
+    content: ''; position: absolute; left: 0; top: 0; width: 1px; height: 1px; border-radius: 50%;
+    box-shadow: 120px 90px #fff, 340px 200px rgba(255,255,255,.6), 560px 120px rgba(180,200,240,.7), 780px 300px #fff,
+      950px 80px rgba(255,255,255,.5), 1180px 240px rgba(255,220,190,.7), 1420px 140px rgba(255,255,255,.6), 1650px 320px #fff,
+      1850px 100px rgba(200,215,245,.6), 210px 460px rgba(255,255,255,.5), 470px 620px #fff, 690px 520px rgba(255,235,210,.6),
+      880px 700px rgba(255,255,255,.5), 1100px 560px rgba(190,205,240,.7), 1330px 660px #fff, 1560px 500px rgba(255,255,255,.5),
+      1780px 640px rgba(255,255,255,.6), 90px 780px rgba(255,255,255,.5), 380px 880px rgba(255,220,200,.6), 620px 960px #fff,
+      840px 840px rgba(255,255,255,.4), 1070px 900px rgba(200,215,245,.6), 1290px 820px #fff, 1520px 940px rgba(255,255,255,.5),
+      1740px 860px rgba(255,255,255,.6), 40px 260px rgba(255,255,255,.5), 1900px 480px #fff, 260px 120px rgba(255,255,255,.4); }
+  .sp-inner { position: relative; text-align: center; padding: 0 16px; }
+  .sp-title { font-size: clamp(34px, 7vw, 96px); font-weight: 800; letter-spacing: 0.16em; color: #eef4ff;
+    text-shadow: 0 0 40px rgba(255,200,130,0.45); margin: 0; }
+  .sp-sub { margin-top: 10px; font-size: clamp(12px, 1.6vw, 20px); letter-spacing: 0.42em; color: #e8c58a; }
+  .sp-loading { margin-top: 30px; font-size: 13px; letter-spacing: 2px; color: #cfe0f5; animation: sp-blink 1.5s ease-in-out infinite; }
+  .sp-corner { position: absolute; font-size: 13px; letter-spacing: 3px; color: #5a6d86; }
+  .sp-tl { left: 34px; top: 30px; } .sp-tr { right: 34px; top: 30px; }
+  .sp-bl { left: 34px; bottom: 28px; } .sp-br { right: 34px; bottom: 28px; }
+  .sp-reticle { position: absolute; left: 50%; bottom: 6vh; transform: translateX(-50%); text-align: center; }
+  .sp-reticle svg { display: block; margin: 0 auto; animation: sp-blink 3s ease-in-out infinite; }
+  .sp-here { margin-top: 8px; font-size: 12px; letter-spacing: 4px; color: #e8b85a; }
+  .sp-credit { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 10px; letter-spacing: 1px; color: #43546b; white-space: nowrap; }
+  @media (max-width: 700px){ .sp-tr, .sp-br, .sp-credit { display: none; } .sp-tl { left: 16px; } .sp-bl { left: 16px; } }
+  @keyframes sp-pulse { 0%,100% { opacity: .8; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.05); } }
+  @keyframes sp-blink { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
 </style>
 </head>
 <body>
+<div id="splash">
+  <div class="sp-corner sp-tl">SYS · SOL</div>
+  <div class="sp-corner sp-tr">ECLIPTIC J2000</div>
+  <div class="sp-inner">
+    <div class="sp-title">SOLAR SYSTEM</div>
+    <div class="sp-sub">REAL POSITIONS · 1957 TO 2035</div>
+    <div class="sp-loading">Loading…</div>
+  </div>
+  <div class="sp-reticle">
+    <svg width="70" height="70" viewBox="0 0 70 70" aria-hidden="true">
+      <circle cx="35" cy="35" r="21" fill="none" stroke="#e8b85a" stroke-width="2"/>
+      <line x1="35" y1="3" x2="35" y2="16" stroke="#e8b85a" stroke-width="2"/>
+      <line x1="35" y1="54" x2="35" y2="67" stroke="#e8b85a" stroke-width="2"/>
+      <line x1="3" y1="35" x2="16" y2="35" stroke="#e8b85a" stroke-width="2"/>
+      <line x1="54" y1="35" x2="67" y2="35" stroke="#e8b85a" stroke-width="2"/>
+    </svg>
+    <div class="sp-here">SOL</div>
+  </div>
+  <div class="sp-corner sp-bl">V0.1.0 // EXPLORER</div>
+  <div class="sp-corner sp-br">1 AU</div>
+  <div class="sp-credit">Positions: NASA/JPL Horizons · Stars: HYG Database v3 (CC BY-SA 4.0) · Orbiters: CelesTrak</div>
+</div>
 <div id="app"></div>
 <div id="labels"></div>
 
@@ -1228,19 +1286,11 @@
 
 </script>
 
-<!-- positions built from JPL Horizons by tools/build.py (sibling files work on file:// where fetch() does not) -->
-<script src="bodies.js"></script>
-<script src="moons.js"></script>
-<script src="probes.js"></script>
-<!-- probes Horizons does not have, rebuilt from dated mission events (approximate); a 404 here just leaves them out -->
-<script src="probes-rebuilt.js"></script>
-<!-- Earth-orbiters (CelesTrak elements; historical orbits from earth-orbiters.md); a 404 here just leaves them out -->
-<script src="orbiters.js"></script>
-<!-- naked-eye stars for the backdrop (HYG v3, CC BY-SA 4.0); a 404 here just means a black sky -->
-<script src="sky.js"></script>
+<!-- the data files (bodies.js, moons.js, probes.js, probes-rebuilt.js, orbiters.js, sky.js) are loaded by the boot
+     loader at the end of this file, after the loading screen has painted -->
 <script>
 "use strict";
-(function () {
+window.__solarMain = function () {   // started by the boot loader below, once the data files are in
 // ===========================================================================
 //  SOLAR SYSTEM EXPLORER: main
 //  1 scene unit = 1 AU. Positions are kept in 64-bit on the CPU in the data frame
@@ -1709,9 +1759,12 @@ for (const o of OBJS){   // Earth-orbiter rings
   scene.add(o.ring);
 }
 
-// ---- spacecraft trails: built lazily the first time a craft needs one, sampled finely where the path curves ----
+// ---- spacecraft trails: sampled finely where the path curves, built lazily in one-year pieces, so a tail (the last
+//      year) costs at most two pieces and a full trail is only built for the craft you select. (Building every
+//      craft's whole trail at startup took about 13 seconds.) ----
 const PLANETS = OBJS.filter(o => o.kind === "planet");
-function buildTrail(o){
+const CHUNK_DAYS = 365.25;
+function buildChunk(o, j){   // samples over [t0 + j*CHUNK, t0 + (j+1)*CHUNK], first point included
   const T = [], P = [], pl = PLANETS.map(() => [0,0,0]);
   const at = (t) => { const p = [0,0,0]; ephPos(o.id, t, p); return p; };
   let nearD = 1;
@@ -1722,22 +1775,38 @@ function buildTrail(o){
       sub(a, pa, m, pm, depth+1); sub(m, pm, b, pb, depth+1);
     } else { T.push(b); P.push(pb[0], pb[1], pb[2]); }
   }
-  let a = o.t0, pa = at(a);
+  const c0 = o.t0 + j*CHUNK_DAYS, c1 = Math.min(o.t0 + (j+1)*CHUNK_DAYS, o.t1);
+  // only planets that come within 1.5 AU during this piece can set the sampling: check those daily, skip the rest
+  const near = [];
+  PLANETS.forEach((p, k) => {
+    for (let q = 0; q <= 12; q++){
+      const t = c0 + (c1 - c0) * q / 12, pc = at(t);
+      if (ephPos(p.id, t, pl[k]) && Math.hypot(pc[0]-pl[k][0], pc[1]-pl[k][1], pc[2]-pl[k][2]) < 1.5){ near.push(k); break; }
+    }
+  });
+  let a = c0, pa = at(a);
   T.push(a); P.push(pa[0], pa[1], pa[2]);
-  while (a < o.t1){
-    const b = Math.min(a + 1, o.t1), pb = at(b);
+  while (a < c1){
+    const b = Math.min(a + 1, c1), pb = at(b);
     // distance to the nearest body sets how finely this day is sampled (planets and its own centers)
     nearD = Math.hypot(pa[0], pa[1], pa[2]);
-    PLANETS.forEach((p, k) => { if (ephPos(p.id, a, pl[k])) nearD = Math.min(nearD, Math.hypot(pa[0]-pl[k][0], pa[1]-pl[k][1], pa[2]-pl[k][2])); });
+    for (const k of near) if (ephPos(PLANETS[k].id, a, pl[k])) nearD = Math.min(nearD, Math.hypot(pa[0]-pl[k][0], pa[1]-pl[k][1], pa[2]-pl[k][2]));
     const e = EPH[o.id], ci = e.centers[e.c[ephIndex(e, a)]];
     if (ci !== SUN_ID && BYID[ci] && ephPos(ci, a, _cp)) nearD = Math.min(nearD, Math.hypot(pa[0]-_cp[0], pa[1]-_cp[1], pa[2]-_cp[2]));
     sub(a, pa, b, pb, 0);
     a = b; pa = pb;
   }
-  o.trT = Float64Array.from(T); o.trW = Float64Array.from(P);
+  return { T: Float64Array.from(T), W: Float64Array.from(P) };
+}
+function chunk(o, j){
+  if (!o.trChunks) o.trChunks = [];
+  return o.trChunks[j] || (o.trChunks[j] = buildChunk(o, j));
+}
+let _chunkBudget = 0;   // older pieces of a full trail built this frame (reset each frame in tick)
+function makeTrailLines(o){
   const mk = (dashed) => {
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array((T.length+2)*3), 3));
+    geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(2048*3), 3));
     const mat = dashed
       ? new THREE.LineDashedMaterial({ color:new THREE.Color(o.color), transparent:true, opacity:0.6, dashSize:1, gapSize:1, depthWrite:false })
       : new THREE.LineBasicMaterial({ color:new THREE.Color(o.color), transparent:true, opacity:0.55, depthWrite:false });
@@ -1747,19 +1816,44 @@ function buildTrail(o){
 }
 function countLE(T, t){ let lo = 0, hi = T.length; while (lo < hi){ const m = (lo + hi) >> 1; if (T[m] <= t) lo = m + 1; else hi = m; } return lo; }
 const TAIL_DAYS = 365;
+const _trBuf = [];   // scratch list of sample positions for one line
 // solid: from the window start to min(now-in-sim, build date); dashed: build date onward (Horizons predictions)
 function updateTrail(o, full){
-  if (!o.trT) buildTrail(o);
-  const T = o.trT, W = o.trW, tEnd = Math.min(simT, o.t1);
+  if (!o.trail) makeTrailLines(o);
+  const tEnd = Math.min(simT, o.t1);
   const tStart = full ? o.t0 : Math.max(o.t0, tEnd - TAIL_DAYS);
+  const last = Math.max(0, Math.ceil((o.t1 - o.t0) / CHUNK_DAYS) - 1);
+  const jOf = (t) => Math.min(last, Math.max(0, Math.floor((t - o.t0) / CHUNK_DAYS)));
   const fillLine = (line, a, b, withEnd) => {
-    const i0 = countLE(T, a) - (a > T[0] ? 1 : 0), i1 = countLE(T, b);
-    const arr = line.geometry.attributes.position.array;
-    let n = 0;
-    for (let k = Math.max(0, i0); k < i1; k++){ writeLocal(arr, n, W[k*3], W[k*3+1], W[k*3+2]); n++; }
-    if (withEnd){ writeLocal(arr, n, o.wp[0], o.wp[1], o.wp[2]); n++; }
+    _trBuf.length = 0;
+    if (b > a || withEnd){
+      // the last two pieces are built at once (a tail needs them); older ones one per frame, so a long full
+      // trail grows backward over a second or two instead of freezing the page
+      let jStart = jOf(a);
+      for (let j = jOf(b); j >= jOf(a); j--){
+        const have = o.trChunks && o.trChunks[j];
+        if (!have && j < jOf(b) - 1){
+          if (_chunkBudget > 0){ _chunkBudget--; chunk(o, j); }
+          else { jStart = j + 1; break; }
+        }
+      }
+      for (let j = jStart; j <= jOf(b); j++){
+        const { T, W } = chunk(o, j);
+        const i0 = Math.max(0, countLE(T, a) - 1), i1 = countLE(T, b);   // start at the sample just before a
+        for (let k = (j === jStart ? i0 : 1); k < i1; k++) _trBuf.push(W[k*3], W[k*3+1], W[k*3+2]);
+      }
+    }
+    if (withEnd) _trBuf.push(o.wp[0], o.wp[1], o.wp[2]);
+    const n = _trBuf.length / 3;
+    let attr = line.geometry.attributes.position;
+    if (n > attr.count){   // grow the buffer (full trails can run to tens of thousands of points)
+      line.geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(Math.ceil(n * 1.5) * 3), 3));
+      attr = line.geometry.attributes.position;
+    }
+    const arr = attr.array;
+    for (let k = 0; k < n; k++) writeLocal(arr, k, _trBuf[k*3], _trBuf[k*3+1], _trBuf[k*3+2]);
     line.geometry.setDrawRange(0, n);
-    line.geometry.attributes.position.needsUpdate = true;
+    attr.needsUpdate = true;
     line.visible = n > 1;
     return n;
   };
@@ -2223,6 +2317,7 @@ function tick(){
   }
   sunLight.position.copy(SUN.local);
   gridDisc.position.copy(SUN.local);
+  _chunkBudget = 1;
   for (const o of OBJS){
     if (o.orbit){
       let vis = o.on && catOn(o) && !o.hidden;
@@ -2278,8 +2373,46 @@ computePositions();
 origin.set(SUN.wp);
 select(SUN);
 tick();
-window.__solar = { OBJS, EPH, ephPos, get simT(){ return simT; }, set simT(v){ simT = v; }, get focus(){ return focus; }, origin, camera, controls };   // for debugging from the console
+window.__solar = { OBJS, EPH, ephPos, buildChunk, get simT(){ return simT; }, set simT(v){ simT = v; }, get focus(){ return focus; }, origin, camera, controls };   // for debugging from the console
 console.log("Solar System Explorer: " + OBJS.length + " objects loaded, " + fmtDate(T_MIN) + " to " + fmtDate(T_MAX - 1) + ".");
+};
+</script>
+<script>
+// ===========================================================================
+//  BOOT LOADER: let the loading screen paint, load the data files behind it one by one (naming each step), start
+//  the app, then fade the screen once the first frames have drawn (UNCHARTED's deferred boot). Each step yields two
+//  frames so the label repaints, with a timer fallback for hidden tabs, where frames are paused.
+// ===========================================================================
+(function () {
+  const DATA_VERSION = "";   // deploy.sh stamps this, so browsers fetch fresh data after each deploy
+  const FILES = [ ["bodies.js", "Charting the planets"], ["moons.js", "Placing the moons"], ["probes.js", "Tracking the spacecraft"],
+                  ["probes-rebuilt.js", "Rebuilding the early missions"], ["orbiters.js", "Ringing Earth"], ["sky.js", "Lighting the sky"] ];
+  const sp = document.getElementById("splash"), status = sp && sp.querySelector(".sp-loading");
+  const say = (s) => { if (status) status.textContent = s + "…"; };
+  const afterPaint = (fn) => { let ran = false; const go = () => { if (!ran){ ran = true; fn(); } };
+                               requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 150); };
+  let k = 0;
+  function next(){
+    if (k >= FILES.length){ say("Building the scene"); afterPaint(start); return; }
+    const [file, label] = FILES[k++];
+    say(label);
+    const el = document.createElement("script");
+    el.src = file + (DATA_VERSION ? "?v=" + DATA_VERSION : "");
+    el.onload = el.onerror = () => afterPaint(next);   // a missing file just leaves that part out, as before
+    document.body.appendChild(el);
+  }
+  const tLoad0 = performance.now();
+  function start(){
+    const t0 = performance.now();
+    try { window.__solarMain(); } catch (e) { console.error("[Solar] start failed", e); }
+    const t1 = performance.now();
+    afterPaint(() => afterPaint(() => {
+      console.log("[Solar] loading: data files " + ((t0 - tLoad0)/1000).toFixed(1) + " s, scene setup " + ((t1 - t0)/1000).toFixed(1) +
+                  " s, first frames " + ((performance.now() - t1)/1000).toFixed(1) + " s");
+      if (sp){ sp.classList.add("done"); setTimeout(() => sp.remove(), 800); }
+    }));
+  }
+  afterPaint(next);
 })();
 </script>
 </body>
